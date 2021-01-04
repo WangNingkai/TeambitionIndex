@@ -15,6 +15,10 @@ class Teambition
 
     public const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36';
 
+    private $err_code;
+
+    private $err_msg;
+
     /**
      * 获取登录Token
      * @return mixed|string
@@ -59,12 +63,12 @@ class Teambition
         $client = $this->_initClient($url);
         $resp = $client->postJson($data);
         $err_code = $resp->getErrCode();
-
-        $cookie = [];
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
-            return $resp->getCookies();
+            return ['cookie' => $resp->getCookies(), 'user' => json_decode($resp->getBody(), true)];
         }
-        return $cookie;
+        return [];
     }
 
     /**
@@ -79,7 +83,8 @@ class Teambition
         $client = $this->_initClient($url, $cookie);
         $resp = $client->get();
         $err_code = $resp->getErrCode();
-
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
             $body = $resp->getBody();
             $_decode = json_decode($body, true);
@@ -103,7 +108,8 @@ class Teambition
         $client = $this->_initClient($url, $cookie);
         $resp = $client->get();
         $err_code = $resp->getErrCode();
-
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
             $body = $resp->getBody();
             $_decode = json_decode($body, true);
@@ -132,7 +138,8 @@ class Teambition
         ]);
         $resp = $client->get();
         $err_code = $resp->getErrCode();
-
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
             $body = $resp->getBody();
             $_decode = json_decode($body, true);
@@ -173,7 +180,8 @@ class Teambition
         $client->setQuery($params);
         $resp = $client->get();
         $err_code = $resp->getErrCode();
-
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
             $body = $resp->getBody();
             $_decode = json_decode($body, true);
@@ -206,7 +214,8 @@ class Teambition
         $client->setQuery($params);
         $resp = $client->get();
         $err_code = $resp->getErrCode();
-
+        $this->err_msg = $resp->getErrMsg();
+        $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
             $body = $resp->getBody();
             $_decode = json_decode($body, true);
@@ -223,7 +232,13 @@ class Teambition
      */
     public function getPanConfig($cookie = [])
     {
-        $config = [];
+        $config = [
+            'orgId' => '',
+            'memberId' => '',
+            'spaceId' => '',
+            'driveId' => '',
+            'rootId' => '',
+        ];
         $org = $this->getOrgId($cookie);
         if ($org) {
             $config['orgId'] = $org['_id'];
@@ -239,6 +254,11 @@ class Teambition
             }
         }
         return $config;
+    }
+
+    public function getErrMsg()
+    {
+        return $this->err_msg;
     }
 
     private function _initClient($url, $cookie = [])

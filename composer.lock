@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9992ff95c70312b08fa0181ea79cb6df",
+    "content-hash": "c7d68bb13b8858a6f6cab81ac74ad639",
     "packages": [
         {
             "name": "doctrine/lexer",
@@ -591,6 +591,65 @@
                 "source": "https://github.com/easy-swoole/easyswoole/tree/3.4.2"
             },
             "time": "2020-12-22T05:07:01+00:00"
+        },
+        {
+            "name": "easyswoole/fast-cache",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/easy-swoole/fast-cache.git",
+                "reference": "aa09a4bcf9f3265a1f9b02251a3d22afe89ebc81"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/easy-swoole/fast-cache/zipball/aa09a4bcf9f3265a1f9b02251a3d22afe89ebc81",
+                "reference": "aa09a4bcf9f3265a1f9b02251a3d22afe89ebc81",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "easyswoole/component": "^2.0",
+                "easyswoole/spl": "^1.1",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "easyswoole/phpunit": "^1.0",
+                "easyswoole/swoole-ide-helper": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "EasySwoole\\FastCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "YF",
+                    "email": "291323003@qq.com"
+                }
+            ],
+            "description": "An efficient swoole framework",
+            "homepage": "https://www.easyswoole.com/",
+            "keywords": [
+                "async",
+                "easyswoole",
+                "framework",
+                "swoole"
+            ],
+            "support": {
+                "issues": "https://github.com/easy-swoole/fast-cache/issues",
+                "source": "https://github.com/easy-swoole/fast-cache/tree/master"
+            },
+            "time": "2019-10-19T14:43:12+00:00"
         },
         {
             "name": "easyswoole/hot-reload",
@@ -1879,6 +1938,7 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3",
+        "ext-swoole": ">=4.4.4",
         "ext-json": "*"
     },
     "platform-dev": [],

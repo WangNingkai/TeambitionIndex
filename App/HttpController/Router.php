@@ -13,18 +13,13 @@ class Router extends AbstractRouter
 {
     function initialize(RouteCollector $routeCollector)
     {
-        $this->setGlobalMode(true);
-        /*
-          * eg path : /router/index.html  ; /router/ ;  /router
-         */
-        $routeCollector->get('/t','/Index/test');
-        /*
-         * eg path : /closure/index.html  ; /closure/ ;  /closure
-         */
-        $routeCollector->get('/closure',function (Request $request,Response $response){
+//        $this->setGlobalMode(true);
+        $routeCollector->post('/api/login', '/Index/login');
+
+        /*$routeCollector->get('/closure', function (Request $request, Response $response) {
             $response->write('this is closure router');
             //不再进入控制器解析
             return false;
-        });
+        });*/
     }
 }
