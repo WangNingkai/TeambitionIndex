@@ -66,7 +66,7 @@ class Teambition
         $this->err_msg = $resp->getErrMsg();
         $this->err_code = $err_code;
         if ($resp && $err_code === 0) {
-            return ['cookie' => $resp->getCookies(), 'user' => json_decode($resp->getBody(), true)];
+            return ['cookie' => $resp->getCookies(), 'user' => json_decode($resp->getBody(), true)['user']];
         }
         return [];
     }
