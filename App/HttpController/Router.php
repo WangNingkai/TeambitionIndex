@@ -15,8 +15,8 @@ class Router extends AbstractRouter
     {
         $this->setGlobalMode(true);
         $routeCollector->post('/api/login', '/Index/login');
-        $routeCollector->get('/api/nodes', '/Index/fetchList');
-        $routeCollector->get('/api/node', '/Index/fetchItem');
+        $routeCollector->post('/api/nodes', '/Index/fetchList');
+        $routeCollector->post('/api/node', '/Index/fetchItem');
 
         /*$routeCollector->get('/closure', function (Request $request, Response $response) {
             $response->write('this is closure router');

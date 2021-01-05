@@ -27,7 +27,8 @@
         "easyswoole/annotation": "^2.0",
         "easyswoole/http-client": "^1.4",
         "tightenco/collect": "^8.19",
-        "easyswoole/fast-cache": "^1.3"
+        "easyswoole/fast-cache": "^1.3",
+        "catfan/medoo": "^1.7"
     },
     "autoload": {
         "psr-4": {

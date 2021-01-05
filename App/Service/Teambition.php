@@ -22,17 +22,41 @@ class Teambition
     private $err_msg;
 
     /**
-     * @var $cookie
+     * @var string
      */
-    private $cookie;
+    public $cookie = [];
+    /**
+     * @var string
+     */
+    public $user = [];
+    /**
+     * @var string
+     */
+    public $orgId = '';
+    /**
+     * @var string
+     */
+    public $spaceId = '';
+    /**
+     * @var string
+     */
+    public $driveId = '';
+    /**
+     * @var string
+     */
+    public $rootId = '';
 
     /**
      * Teambition constructor.
-     * @param $cookie
+     * @param $options
      */
-    public function __construct($cookie)
+    public function __construct($options = [])
     {
-        $this->cookie = $cookie;
+        foreach ($options as $k => $v) {
+            if (property_exists($this, $k)) {
+                $this->$k = $v;
+            }
+        }
     }
 
     /**
@@ -114,23 +138,20 @@ class Teambition
 
     /**
      * 获取资源列表
-     * @param $orgId
-     * @param $spaceId
-     * @param $driveId
-     * @param $parentId
+     * @param $nodeId
      * @param int $limit
      * @param int $offset
      * @return array|mixed
      * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
      */
-    public function getItemList($orgId, $spaceId, $driveId, $parentId, $limit = 100, $offset = 0)
+    public function getItemList($nodeId, $limit = 100, $offset = 0)
     {
         $url = 'https://pan.teambition.com/pan/api/nodes?';
         $params = [
-            'orgId' => $orgId,
-            'spaceId' => $spaceId,
-            'driveId' => $driveId,
-            'parentId' => $parentId,
+            'orgId' => $this->orgId,
+            'spaceId' => $this->spaceId,
+            'driveId' => $this->driveId,
+            'parentId' => $nodeId,
             'offset' => $offset,
             'limit' => $limit,
             'orderBy' => 'updateTime',
@@ -154,20 +175,17 @@ class Teambition
 
     /**
      * 获取资源详情
-     * @param $orgId
-     * @param $spaceId
-     * @param $driveId
-     * @param $parentId
+     * @param $nodeId
      * @return array|mixed
      * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
      */
-    public function getItem($orgId, $spaceId, $driveId, $parentId)
+    public function getItem($nodeId)
     {
-        $url = "https://pan.teambition.com/pan/api/nodes/{$parentId}?";
+        $url = "https://pan.teambition.com/pan/api/nodes/{$nodeId}?";
         $params = [
-            'orgId' => $orgId,
-            'spaceId' => $spaceId,
-            'driveId' => $driveId,
+            'orgId' => $this->orgId,
+            'spaceId' => $this->spaceId,
+            'driveId' => $this->driveId,
         ];
         $client = $this->_initClient($url);
         $client->setQuery($params);
