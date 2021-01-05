@@ -13,7 +13,7 @@ class Router extends AbstractRouter
 {
     function initialize(RouteCollector $routeCollector)
     {
-//        $this->setGlobalMode(true);
+        $this->setGlobalMode(true);
         $routeCollector->post('/api/login', '/Index/login');
         $routeCollector->get('/api/nodes', '/Index/fetchList');
         $routeCollector->get('/api/node', '/Index/fetchItem');

@@ -5,6 +5,8 @@ namespace App\HttpController;
 
 
 use App\Service\Teambition;
+use App\Service\TeambitionAuth;
+use App\Service\TeambitionClient;
 use EasySwoole\FastCache\Cache;
 use EasySwoole\HttpAnnotation\AnnotationController;
 use EasySwoole\HttpAnnotation\AnnotationTag\Method;
@@ -13,6 +15,7 @@ use Tightenco\Collect\Support\Arr;
 class Index extends AnnotationController
 {
     /**
+     * 登录缓存
      * @Method(allow={POST})
      * @throws \Exception
      */
@@ -21,22 +24,26 @@ class Index extends AnnotationController
         $request = $this->json();
         $phone = Arr::get($request, 'phone');
         $password = Arr::get($request, 'password');
-        $client = new Teambition();
-        $login = $client->login($phone, $password);
-        if (blank($login)) {
-            $this->writeJson(500, [], $client->getErrMsg());
+        try {
+            $login = TeambitionAuth::login($phone, $password);
+        } catch (\Exception $e) {
+            return $this->writeJson(500, [], $e->getMessage());
         }
-        $cookie = $login['cookie'];
-        $user = $login['user'];
-        $pan_params = $client->getPanConfig($cookie);
+
+        $cookie = Arr::get($login, 'cookie');
+        $user = Arr::get($login, 'user');
+        $client = new Teambition($cookie);
+        $pan_params = $client->getPanConfig();
+        if ($client->getErrCode() !== 0) {
+            return $this->writeJson(500, [], $client->getErrMsg());
+        }
         $config = array_merge($login, $pan_params);
-        Cache::getInstance()->set($user['_id'], $user, 3600);
-        Cache::getInstance()->set('cookie:' . $user['_id'], $cookie, 3600);
-        Cache::getInstance()->set('pan:' . $user['_id'], $pan_params, 3600);
-        $this->writeJson(200, $config, 'success');
+        Cache::getInstance()->set($user['_id'], $config, 3600 * 72);
+        return $this->writeJson(200, $user, 'success');
     }
 
     /**
+     * 获取列表
      * @Method(allow={GET})
      * @throws \Exception
      */
@@ -44,18 +51,16 @@ class Index extends AnnotationController
     {
         $request = $this->request();
         $_id = $request->getRequestParam('_id');
-        /*$config = json_decode(Cache::getInstance()->get($_id), true);
-        $cookie = Arr::get($config, 'cookie');
-        $orgId = Arr::get($config, 'orgId');
-        $spaceId = Arr::get($config, 'spaceId');
-        $driveId = Arr::get($config, 'driveId');
-        $rootId = Arr::get($config, 'rootId');
-        $client = new Teambition();
-        $resp = $client->getItemList($cookie, $orgId, $spaceId, $driveId, $rootId);*/
-        $this->writeJson(200, Cache::getInstance()->get('cookie:'.$_id), 'success');
+        $nodeId = $request->getRequestParam('nodeId');
+        $config = Cache::getInstance()->get($_id);
+        $client = new TeambitionClient($config);
+        $service = new Teambition($client->cookie);
+        $resp = $service->getItemList($client->orgId, $client->spaceId, $client->driveId, $nodeId ?: $client->rootId);
+        $this->writeJson(200, $resp, 'success');
     }
 
     /**
+     * 获取资源详情
      * @Method(allow={GET})
      * @throws \Exception
      */
@@ -63,14 +68,11 @@ class Index extends AnnotationController
     {
         $request = $this->request();
         $_id = $request->getRequestParam('_id');
-        $config = json_decode(Cache::getInstance()->get($_id), true);
-        $cookie = Arr::get($config, 'cookie');
-        $orgId = Arr::get($config, 'orgId');
-        $spaceId = Arr::get($config, 'spaceId');
-        $driveId = Arr::get($config, 'driveId');
-        $rootId = Arr::get($config, 'rootId');
-        $client = new Teambition();
-        $resp = $client->getItem($cookie, $orgId, $spaceId, $driveId, $rootId);
+        $nodeId = $request->getRequestParam('nodeId');
+        $config = Cache::getInstance()->get($_id);
+        $client = new TeambitionClient($config);
+        $service = new Teambition($client->cookie);
+        $resp = $service->getItem($client->orgId, $client->spaceId, $client->driveId, $nodeId ?: $client->rootId);
         $this->writeJson(200, $resp, 'success');
     }
 
