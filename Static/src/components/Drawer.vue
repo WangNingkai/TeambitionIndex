@@ -73,7 +73,7 @@ const handleLogout = () => {
       timeout: 2000,
       position: 'right-top',
     })
-    router.push({path: '/'})
+    router.push({name: 'Login'})
   }, 500)
 }
 
