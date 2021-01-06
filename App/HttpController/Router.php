@@ -4,6 +4,7 @@
 namespace App\HttpController;
 
 
+use App\Service\Teambition;
 use EasySwoole\Http\AbstractInterface\AbstractRouter;
 use EasySwoole\Http\Request;
 use EasySwoole\Http\Response;
@@ -18,10 +19,17 @@ class Router extends AbstractRouter
         $routeCollector->post('/api/nodes', '/Index/fetchList');
         $routeCollector->post('/api/node', '/Index/fetchItem');
 
-        /*$routeCollector->get('/closure', function (Request $request, Response $response) {
-            $response->write('this is closure router');
-            //不再进入控制器解析
-            return false;
-        });*/
+        $routeCollector->get('/t', function (Request $request, Response $response) {
+            $service = new Teambition([]);
+            try {
+                $r = $service->getOrgId();
+            } catch (\Exception $e) {
+                $response->write($e->getMessage());
+                return true;
+            }
+
+            $response->write($r);
+            return true;
+        });
     }
 }

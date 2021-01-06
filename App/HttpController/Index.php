@@ -20,20 +20,22 @@ class Index extends AnnotationController
     public function login()
     {
         $request = collect($this->json());
-        $phone = $request->get($request, 'phone');
-        $password = $request->get($request, 'password');
+        $phone = $request->get('phone');
+        $password = $request->get('password');
         try {
             $login = TeambitionAuth::login($phone, $password);
         } catch (\Exception $e) {
             return $this->writeJson(500, [], $e->getMessage());
         }
+
         $login = collect($login);
         $cookie = $login->get('cookie');
         $user = $login->get('user');
         $client = new Teambition(['cookie' => $cookie]);
-        $pan_params = $client->getPanConfig();
-        if ($client->getErrCode() !== 0) {
-            return $this->writeJson(500, [], $client->getErrMsg());
+        try {
+            $pan_params = $client->getPanConfig();
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
         }
         $config = array_merge($login->toArray(), $pan_params);
         Cache::getInstance()->set($user['_id'], $config, 3600 * 72);
@@ -57,8 +59,18 @@ class Index extends AnnotationController
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         $nodeId = $nodeId ?: $rootId;
-        $list = $service->getItemList($nodeId, $limit, $offset);
-        $item = $service->getItem($nodeId);
+        try {
+            $item = $service->getItem($nodeId);
+
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
+        }
+        try {
+            $list = $service->getItemList($nodeId, $limit, $offset);
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
+        }
+
         $data = collect($list);
 
         $rootId = $config->get('rootId');
@@ -87,7 +99,11 @@ class Index extends AnnotationController
         $config = collect($config);
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
-        $resp = $service->getItem($nodeId ?: $rootId);
+        try {
+            $resp = $service->getItem($nodeId ?: $rootId);
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
+        }
         return $this->writeJson(200, $resp, 'success');
     }
 

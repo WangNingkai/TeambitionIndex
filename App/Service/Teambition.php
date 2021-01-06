@@ -15,12 +15,10 @@ class Teambition
      * @var $err_code
      */
     private $err_code;
-
     /**
      * @var $err_msg
      */
     private $err_msg;
-
     /**
      * @var string
      */
@@ -62,48 +60,49 @@ class Teambition
     /**
      * 获取OrgId
      * @return array|mixed
-     * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
+     * @throws \Exception
      */
-    private function getOrgId()
+    public function getOrgId()
     {
         $url = 'https://www.teambition.com/api/organizations/personal';
         $client = $this->_initClient($url);
         $resp = $client->get();
-        $err_code = $resp->getErrCode();
-        $this->err_msg = $resp->getErrMsg();
-        $this->err_code = $err_code;
-        if ($resp && $err_code === 0) {
-            $body = $resp->getBody();
-            $_decode = json_decode($body, true);
-            if (isset($_decode['_id'], $_decode['_creatorId'])) {
-                return $_decode;
+        $this->err_code = $resp->getStatusCode();
+        $body = $resp->getBody();
+        $body = is_json($body) ? json_decode($body, true) : $body;
+        if ($resp && $this->err_code < 400) {
+            $_decode = collect($body);
+            if ($_decode->has('_id') && $_decode->has('_creatorId')) {
+                return $_decode->toArray();
             }
         }
-        return [];
+        $this->err_msg = collect($body)->get('message');
+        throw new \RuntimeException($this->err_msg, $this->err_code);
     }
 
     /**
      * 获取DriveId
      * @param $orgId
      * @return array|mixed
-     * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
+     * @throws \Exception
      */
-    private function getDriveId($orgId)
+    public function getDriveId($orgId)
     {
         $url = 'https://pan.teambition.com/pan/api/orgs/' . $orgId;
         $client = $this->_initClient($url);
         $resp = $client->get();
-        $err_code = $resp->getErrCode();
-        $this->err_msg = $resp->getErrMsg();
-        $this->err_code = $err_code;
-        if ($resp && $err_code === 0) {
-            $body = $resp->getBody();
-            $_decode = json_decode($body, true);
+        $this->err_code = $resp->getStatusCode();
+        $body = $resp->getBody();
+        $body = is_json($body) ? json_decode($body, true) : $body;
+        if ($resp && $this->err_code < 400) {
+            $_decode = collect($body);
+            $_decode = $_decode->toArray();
             if (isset($_decode['data']['driveId'])) {
                 return $_decode;
             }
         }
-        return [];
+        $this->err_msg = collect($body)->get('message');
+        throw new \RuntimeException($this->err_msg, $this->err_code);
     }
 
     /**
@@ -111,9 +110,9 @@ class Teambition
      * @param $orgId
      * @param $memberId
      * @return array|mixed
-     * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
+     * @throws \Exception
      */
-    private function getSpaceId($orgId, $memberId)
+    public function getSpaceId($orgId, $memberId)
     {
         $url = 'https://pan.teambition.com/pan/api/spaces?';
         $client = $this->_initClient($url);
@@ -122,18 +121,18 @@ class Teambition
             'memberId' => $memberId
         ]);
         $resp = $client->get();
-        $err_code = $resp->getErrCode();
-        $this->err_msg = $resp->getErrMsg();
-        $this->err_code = $err_code;
-        if ($resp && $err_code === 0) {
-            $body = $resp->getBody();
-            $_decode = json_decode($body, true);
+        $this->err_code = $resp->getStatusCode();
+        $body = $resp->getBody();
+        $body = is_json($body) ? json_decode($body, true) : $body;
+        if ($resp && $this->err_code < 400) {
+            $_decode = collect($body);
+            $_decode = $_decode->toArray();
             if (isset($_decode['0']['spaceId'], $_decode[0]['rootId'])) {
                 return $_decode;
             }
         }
-
-        return [];
+        $this->err_msg = collect($body)->get('message');
+        throw new \RuntimeException($this->err_msg, $this->err_code);
     }
 
     /**
@@ -142,7 +141,7 @@ class Teambition
      * @param int $limit
      * @param int $offset
      * @return array|mixed
-     * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
+     * @throws \Exception
      */
     public function getItemList($nodeId, $limit = 100, $offset = 0)
     {
@@ -160,24 +159,22 @@ class Teambition
         $client = $this->_initClient($url);
         $client->setQuery($params);
         $resp = $client->get();
-        $err_code = $resp->getErrCode();
-        $this->err_msg = $resp->getErrMsg();
-        $this->err_code = $err_code;
-        if ($resp && $err_code === 0) {
-            $body = $resp->getBody();
-            $_decode = json_decode($body, true);
-            return $_decode;
+        $this->err_code = $resp->getStatusCode();
+        $body = $resp->getBody();
+        $body = is_json($body) ? json_decode($body, true) : $body;
+        if ($resp && $this->err_code < 400) {
+            $_decode = collect($body);
+            return $_decode->toArray();
         }
-        return [];
-
-
+        $this->err_msg = collect($body)->get('message');
+        throw new \RuntimeException($this->err_msg, $this->err_code);
     }
 
     /**
      * 获取资源详情
      * @param $nodeId
      * @return array|mixed
-     * @throws \EasySwoole\HttpClient\Exception\InvalidUrl
+     * @throws \Exception
      */
     public function getItem($nodeId)
     {
@@ -190,15 +187,15 @@ class Teambition
         $client = $this->_initClient($url);
         $client->setQuery($params);
         $resp = $client->get();
-        $err_code = $resp->getErrCode();
-        $this->err_msg = $resp->getErrMsg();
-        $this->err_code = $err_code;
-        if ($resp && $err_code === 0) {
-            $body = $resp->getBody();
-            $_decode = json_decode($body, true);
-            return $_decode;
+        $this->err_code = $resp->getStatusCode();
+        $body = $resp->getBody();
+        $body = is_json($body) ? json_decode($body, true) : $body;
+        if ($resp && $this->err_code < 400) {
+            $_decode = collect($body);
+            return $_decode->toArray();
         }
-        return [];
+        $this->err_msg = collect($body)->get('message');
+        throw new \RuntimeException($this->err_msg, $this->err_code);
     }
 
     /**

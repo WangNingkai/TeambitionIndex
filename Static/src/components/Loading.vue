@@ -5,7 +5,7 @@
 import {defineProps} from 'vue'
 
 defineProps({
-  color: String
+  color: String,
 })
 </script>
 <style scoped>

@@ -13,13 +13,13 @@
             <i class="mdui-icon material-icons">face</i>
             <label class="mdui-textfield-label" for="phone">请输入手机号或邮箱</label>
             <input
-                id="phone"
-                name="phone"
-                class="mdui-textfield-input"
-                type="text"
-                required
-                v-model="data.phone"
-                autocomplete
+              id="phone"
+              name="phone"
+              class="mdui-textfield-input"
+              type="text"
+              required
+              v-model="data.phone"
+              autocomplete
             />
             <div class="mdui-textfield-error">手机号不能为空</div>
           </div>
@@ -27,18 +27,21 @@
             <i class="mdui-icon material-icons">https</i>
             <label class="mdui-textfield-label" for="password">请输入密码</label>
             <input
-                id="password"
-                name="password"
-                class="mdui-textfield-input"
-                type="password"
-                required
-                v-model="data.password"
-                autocomplete
+              id="password"
+              name="password"
+              class="mdui-textfield-input"
+              type="password"
+              required
+              v-model="data.password"
+              autocomplete
             />
             <div class="mdui-textfield-error">密码不能为空</div>
           </div>
-          <button type="button" class="mdui-center mdui-btn mdui-ripple mdui-color-theme"
-                  @click.prevent="handleSubmit()">
+          <button
+            type="button"
+            class="mdui-center mdui-btn mdui-ripple mdui-color-theme"
+            @click.prevent="handleSubmit()"
+          >
             <i class="mdui-icon material-icons">fingerprint</i>
             确认
           </button>
@@ -51,7 +54,7 @@
 import {onMounted, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import mdui from 'mdui'
-import store from "../libs/store";
+import store from '../libs/store'
 import {login} from '../api/user'
 
 const router = useRouter()
@@ -66,8 +69,9 @@ const handleSubmit = async () => {
     phone: data.phone,
     password: data.password,
   }).then((res) => {
+    console.log(res)
     const code = res.code
-    if (code !== 200 ||  res.result._id === null) {
+    if (code !== 200 || res.result._id === null) {
       mdui.snackbar({
         message: ':( ' + res.msg,
         timeout: 2000,

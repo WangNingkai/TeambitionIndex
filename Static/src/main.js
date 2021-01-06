@@ -1,9 +1,9 @@
 import 'mdui'
-import 'mdui/dist/css/mdui.min.css'
+import 'mdui/dist/css/mdui.css'
 import {createApp} from 'vue'
-import './assets/notosans.css'
-import './assets/index.css'
 import App from './App.vue'
+import './assets/index.css'
+import './assets/notosans.css'
 import router from './router/index'
 
 const app = createApp(App)

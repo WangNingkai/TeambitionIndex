@@ -4,13 +4,17 @@
       <div class="mdui-card-content">
         <div class="mdui-typo mdui-m-t-2">
           <div class="mdui-typo-title-opacity">{{ data.item.name }}</div>
-          <div
-              class="mdui-typo-subheading-opacity">{{ formatSize(data.item.size) }}
-          </div>
+          <div class="mdui-typo-subheading-opacity">{{ formatSize(data.item.size) }}</div>
         </div>
         <div class="mdui-m-t-2" style="min-height: 300px">
           <div v-if="in_array(data.item.ext, fileExtension.image)">
             <img class="mdui-img-fluid" :src="data.item.downloadUrl" :alt="data.item.name" />
+          </div>
+          <div v-else-if="in_array(data.item.ext, fileExtension.video)">
+            <Player :source="data.item.downloadUrl" type="video" />
+          </div>
+          <div v-else-if="in_array(data.item.ext, fileExtension.audio)">
+            <Player :source="data.item.downloadUrl" type="audio" />
           </div>
           <div v-else>
             <p>此文件暂不支持预览</p>
@@ -19,43 +23,44 @@
         <div class="mdui-typo mdui-m-t-2">
           <div class="mdui-textfield">
             <i class="mdui-icon material-icons">links</i>
-            <input class="mdui-textfield-input" type="text" id="link"
-                   :value="data.item.downloadUrl"/>
-
+            <input class="mdui-textfield-input" type="text" id="link" :value="data.item.downloadUrl" />
           </div>
           <button
-              @click="copy()"
-              data-clipboard-target="#link"
-              class="clipboard mdui-btn mdui-btn-raised mdui-btn-dense mdui-ripple mdui-color-theme-accent mdui-float-right">
+            @click="copy()"
+            data-clipboard-target="#link"
+            class="clipboard mdui-btn mdui-btn-raised mdui-btn-dense mdui-ripple mdui-color-theme-accent mdui-float-right"
+          >
             <i class="mdui-icon material-icons">content_copy</i> 复制
           </button>
-
         </div>
       </div>
     </div>
   </div>
-  <a  :href="data.item.downloadUrl"
-     class="mdui-fab mdui-fab-fixed mdui-ripple mdui-color-theme-accent"
-  ><i class="mdui-icon material-icons">file_download</i></a>
+  <a :href="data.item.downloadUrl" class="mdui-fab mdui-fab-fixed mdui-ripple mdui-color-theme-accent"
+    ><i class="mdui-icon material-icons">file_download</i></a
+  >
 </template>
 <script setup>
 import {computed, onMounted, reactive, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import mdui from 'mdui'
-import store from "../libs/store";
-import {fetchItem} from "../api/teambition";
+import {in_array, defaultValue, formatSize, fileExtension, isEmpty} from '../libs/utils'
+import {fetchItem} from '../api/teambition'
 import Clipboard from 'clipboard'
+import mdui from 'mdui'
+import store from '../libs/store'
+import Player from '../components/Player.vue'
 
 const router = useRouter()
 const route = useRoute()
 const data = reactive({
   parentId: '',
   item: {},
-  loading: false
+  loading: false,
 })
 const nodeId = computed(() => defaultValue(route.query.nodeId, ''))
 
 const user = store.get('user')
+
 const copy = () => {
   const clipboard = new Clipboard('.clipboard')
   clipboard.on('success', (e) => {
@@ -70,68 +75,14 @@ const copy = () => {
     clipboard.destroy()
   })
 }
-const in_array = (needle, haystack, argStrict) => {
-  let key = ''
-  const strict = !!argStrict
-  if (strict) {
-    for (key in haystack) {
-      if (haystack[key] === needle) {
-        return true
-      }
-    }
-  } else {
-    for (key in haystack) {
-      // eslint-disable-next-line
-      if (haystack[key] == needle) {
-        return true
-      }
-    }
-  }
 
-  return false
-}
-const fileExtension = {
-  image: ['ico', 'bmp', 'gif', 'jpg', 'jpeg', 'jpe', 'jfif', 'tif', 'tiff', 'png', 'heic', 'webp'],
-  audio: ['mp3', 'wma', 'flac', 'ape', 'wav', 'ogg', 'm4a'],
-  office: ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'csv'],
-  txt: ['txt', 'bat', 'sh', 'php', 'asp', 'js', 'css', 'json', 'html', 'c', 'cpp', 'md', 'py', 'omf'],
-  video: ['mp4', 'webm', 'mkv', 'mov', 'flv', 'blv', 'avi', 'wmv', 'm3u8', 'rm', 'rmvb'],
-  zip: ['zip', 'rar', '7z', 'gz', 'tar'],
-}
-
-const formatSize = (size) => {
-  if (typeof size !== 'number') size = NaN
-  let count = 0
-  while (size >= 1024) {
-    size /= 1024
-    count++
-  }
-  size = size.toFixed(2)
-  size += [' B', ' KB', ' MB', ' GB', ' TB'][count]
-  return size
-}
-
-const isEmpty = (obj) => [Object, Array].includes((obj || {}).constructor) && !Object.entries(obj || {}).length
-
-const defaultValue = (value, defaultValue) => {
-  switch (value) {
-    case 'null':
-    case 'undefined':
-    case null:
-    case undefined:
-    case '':
-      return defaultValue
-    default:
-      return value
-  }
-}
 const fetchNode = async () => {
   data.loading = true
   await fetchItem({
     _id: user._id,
     nodeId: nodeId.value,
     offset: data.offset,
-    limit: data.limit
+    limit: data.limit,
   }).then((res) => {
     data.loading = false
     const result = res.result
@@ -152,12 +103,12 @@ const download = (url) => {
 }
 
 watch(
-    () => route.query.nodeId,
-    async (query) => {
-      if (defaultValue(query, false) !== false || query === '') {
-        await fetchNode()
-      }
-    },
+  () => route.query.nodeId,
+  async (query) => {
+    if (defaultValue(query, false) !== false || query === '') {
+      await fetchNode()
+    }
+  },
 )
 
 onMounted(() => {
