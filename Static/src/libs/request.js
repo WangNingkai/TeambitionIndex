@@ -3,7 +3,7 @@ import mdui from 'mdui'
 import store from '../store'
 
 const config = {
-  baseURL: '/',
+  baseURL: 'http://192.168.199.101:9501',
   // withCredentials: true, // Check cross-site Access-Control
 }
 

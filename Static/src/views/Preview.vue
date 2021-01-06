@@ -67,7 +67,11 @@ const user = computed(() => store.state.user)
 const copy = () => {
   const clipboard = new Clipboard('.clipboard')
   clipboard.on('success', (e) => {
-    console.log('复制成功')
+    mdui.snackbar({
+      message: ':) 复制成功',
+      timeout: 2000,
+      position: 'right-top',
+    })
     // 释放内存
     clipboard.destroy()
   })
