@@ -55,7 +55,7 @@ class Index extends AnnotationController
         $limit = $request->get('limit', 100);
         $offset = $request->get('offset', 0);
         $config = Cache::getInstance()->get($_id);
-        $config = collect($config);
+        $config = collect(current($config));
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         $nodeId = $nodeId ?: $rootId;
@@ -96,7 +96,7 @@ class Index extends AnnotationController
         $_id = $request->get('_id');
         $nodeId = $request->get('nodeId');
         $config = Cache::getInstance()->get($_id);
-        $config = collect($config);
+        $config = collect(current($config));
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         try {

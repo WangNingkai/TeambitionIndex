@@ -1,9 +1,9 @@
 import axios from 'axios'
 import mdui from 'mdui'
-import store from 'store'
+import store from '../store'
 
 const config = {
-  baseURL: 'http://192.168.199.101:9501',
+  baseURL: '/',
   // withCredentials: true, // Check cross-site Access-Control
 }
 
@@ -27,9 +27,6 @@ _axios.interceptors.response.use(
         message: data.msg,
         timeout: 0,
         position: 'right-top',
-        onButtonClick: function () {
-          window.location.reload()
-        },
       })
     }
     return data
@@ -47,7 +44,7 @@ _axios.interceptors.response.use(
         case 401:
           error.message = '登录失效'
           // 退出登录
-          store.set('user', {})
+          store.commit('clearUser')
           break
         case 403:
           error.message = '拒绝访问'
@@ -57,13 +54,13 @@ _axios.interceptors.response.use(
           error.message = error.response.data.msg
           break
         default:
-          error.message = '网络错误,无法请求到数据！'
+          error.message = ': ( 请求失败...刷新页面或点击按钮以重试'
           break
       }
     }
     // Do something with response error
     mdui.snackbar({
-      message: ': ( 数据获取失败...刷新页面或点击按钮以重试',
+      message: error.message,
       buttonText: '重试',
       timeout: 0,
       onButtonClick: function () {

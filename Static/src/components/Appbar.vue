@@ -3,14 +3,12 @@
     <div class="mdui-toolbar">
       <span
         class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white"
-        mdui-tooltip="{content: '菜单'}"
-        id="toggle-drawer"
         mdui-drawer="{target: '#main-drawer', swipe: true}"
         ><i class="mdui-icon material-icons">menu</i></span
       >
       <a
-        mdui-tooltip="{content: '返回'}"
-        class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white mdui-hidden-sm-up"
+        mdui-tooltip="{content: '返回上一级'}"
+        class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white"
         onclick="window.history.back()"
       >
         <i class="mdui-icon material-icons">arrow_back</i>

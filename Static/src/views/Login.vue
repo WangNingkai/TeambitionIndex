@@ -39,7 +39,7 @@
           </div>
           <button
             type="button"
-            class="mdui-center mdui-btn mdui-ripple mdui-color-theme"
+            class="mdui-center mdui-btn mdui-ripple mdui-color-theme-accent"
             @click.prevent="handleSubmit()"
           >
             <i class="mdui-icon material-icons">fingerprint</i>
@@ -54,42 +54,43 @@
 import {onMounted, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import mdui from 'mdui'
-import store from '../libs/store'
 import {login} from '../api/user'
+import {useStore} from 'vuex'
 
+const store = useStore()
 const router = useRouter()
 const route = useRoute()
+
 const data = reactive({
   phone: '',
   password: '',
 })
 
-const handleSubmit = async () => {
-  await login({
-    phone: data.phone,
-    password: data.password,
-  }).then((res) => {
-    console.log(res)
-    const code = res.code
-    if (code !== 200 || res.result._id === null) {
-      mdui.snackbar({
-        message: ':( ' + res.msg,
-        timeout: 2000,
-        position: 'right-top',
-      })
-    } else {
-      store.set('user', res.result)
-      router.push({path: '/'})
-      // 延迟 1 秒显示欢迎信息
-      setTimeout(() => {
+const handleSubmit = () => {
+  store
+    .dispatch('login', {
+      phone: data.phone,
+      password: data.password,
+    })
+    .then((res) => {
+      const code = res.code
+      if (code !== 200 || res.result._id === null) {
         mdui.snackbar({
-          message: ':) 欢迎回来',
+          message: ':( ' + res.msg,
           timeout: 2000,
           position: 'right-top',
         })
-      }, 1000)
-    }
-  })
+      } else {
+        setTimeout(() => {
+          mdui.snackbar({
+            message: ':) 欢迎回来',
+            timeout: 2000,
+            position: 'right-top',
+          })
+        }, 500)
+        router.push({name: 'Home'})
+      }
+    })
 }
 
 onMounted(() => {

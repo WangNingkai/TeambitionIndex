@@ -1,7 +1,8 @@
 <template>
   <div class="mdui-m-t-5">
     <div class="mdui-card mdui-shadow-3 mdui-p-a-2" style="border-radius: 8px">
-      <div class="mdui-card-content">
+      <Loading v-if="data.loading" color="mdui-color-blue-200"></Loading>
+      <div v-else class="mdui-card-content">
         <div class="mdui-typo mdui-m-t-2">
           <div class="mdui-typo-title-opacity">{{ data.item.name }}</div>
           <div class="mdui-typo-subheading-opacity">{{ formatSize(data.item.size) }}</div>
@@ -47,9 +48,11 @@ import {in_array, defaultValue, formatSize, fileExtension, isEmpty} from '../lib
 import {fetchItem} from '../api/teambition'
 import Clipboard from 'clipboard'
 import mdui from 'mdui'
-import store from '../libs/store'
 import Player from '../components/Player.vue'
+import Loading from '../components/Loading.vue'
+import {useStore} from 'vuex'
 
+const store = useStore()
 const router = useRouter()
 const route = useRoute()
 const data = reactive({
@@ -59,7 +62,7 @@ const data = reactive({
 })
 const nodeId = computed(() => defaultValue(route.query.nodeId, ''))
 
-const user = store.get('user')
+const user = computed(() => store.state.user)
 
 const copy = () => {
   const clipboard = new Clipboard('.clipboard')

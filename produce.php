@@ -10,14 +10,14 @@ return [
         'SETTING' => [
             'worker_num' => 8,
             'reload_async' => true,
-            'max_wait_time'=>3
+            'max_wait_time' => 3
         ],
-        'TASK'=>[
-            'workerNum'=>4,
-            'maxRunningNum'=>128,
-            'timeout'=>15
-        ]
+        'TASK' => [
+            'workerNum' => 4,
+            'maxRunningNum' => 128,
+            'timeout' => 15
+        ],
     ],
     'TEMP_DIR' => '/tmp',
-    'LOG_DIR' => null
+    'LOG_DIR' => null,
 ];

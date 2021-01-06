@@ -19,17 +19,9 @@ class Router extends AbstractRouter
         $routeCollector->post('/api/nodes', '/Index/fetchList');
         $routeCollector->post('/api/node', '/Index/fetchItem');
 
-        $routeCollector->get('/t', function (Request $request, Response $response) {
-            $service = new Teambition([]);
-            try {
-                $r = $service->getOrgId();
-            } catch (\Exception $e) {
-                $response->write($e->getMessage());
-                return true;
-            }
-
-            $response->write($r);
-            return true;
+        $routeCollector->get('/', function (Request $request, Response $response) {
+            $file = EASYSWOOLE_ROOT . '/Static/dist/index.html';
+            $response->write(file_get_contents($file));
         });
     }
 }

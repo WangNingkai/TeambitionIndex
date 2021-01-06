@@ -76,10 +76,10 @@
 import {onMounted, watch, computed, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import mdui from 'mdui'
-import store from '../libs/store'
 import {fetchList} from '../api/teambition'
 import Loading from '../components/Loading.vue'
-import {isEmpty,defaultValue,formatSize} from '../libs/utils'
+import {isEmpty, defaultValue, formatSize} from '../libs/utils'
+import {useStore} from 'vuex'
 
 Date.prototype.Format = function (fmt) {
   let o = {
@@ -98,6 +98,7 @@ Date.prototype.Format = function (fmt) {
   return fmt
 }
 
+const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -114,8 +115,7 @@ const data = reactive({
 
 const nodeId = computed(() => defaultValue(route.query.nodeId, ''))
 
-const user = store.get('user')
-
+const user = computed(() => store.state.user)
 
 const fetchNodes = async () => {
   data.loading = true
@@ -169,10 +169,8 @@ const download = (url) => {
 
 watch(
   () => route.query.nodeId,
-  async (query) => {
-    if (defaultValue(query, false) !== false || query === '') {
-      await fetchNodes()
-    }
+  async (nodeId) => {
+    await fetchNodes()
   },
 )
 
