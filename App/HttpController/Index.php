@@ -4,17 +4,16 @@
 namespace App\HttpController;
 
 
+use App\Service\App;
 use App\Service\Teambition;
 use App\Service\TeambitionAuth;
 use EasySwoole\FastCache\Cache;
-use EasySwoole\HttpAnnotation\AnnotationController;
-use EasySwoole\HttpAnnotation\AnnotationTag\Method;
+use EasySwoole\Http\AbstractInterface\Controller;
 
-class Index extends AnnotationController
+class Index extends Controller
 {
     /**
      * 登录缓存
-     * @Method(allow={POST})
      * @throws \Exception
      */
     public function login()
@@ -39,12 +38,14 @@ class Index extends AnnotationController
         }
         $config = array_merge($login->toArray(), $pan_params);
         Cache::getInstance()->set($user['_id'], $config, 3600 * 72);
-        return $this->writeJson(200, $user, 'success');
+
+        $token = App::getInstance()->getJwtToken($user);
+
+        return $this->writeJson(200, compact('user', 'token'), 'success');
     }
 
     /**
      * 获取列表
-     * @Method(allow={POST})
      * @throws \Exception
      */
     public function fetchList()
@@ -54,8 +55,10 @@ class Index extends AnnotationController
         $nodeId = $request->get('nodeId');
         $limit = $request->get('limit', 100);
         $offset = $request->get('offset', 0);
+
         $config = Cache::getInstance()->get($_id);
         $config = collect(current($config));
+
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         $nodeId = $nodeId ?: $rootId;
@@ -87,7 +90,6 @@ class Index extends AnnotationController
 
     /**
      * 获取资源详情
-     * @Method(allow={POST})
      * @throws \Exception
      */
     public function fetchItem()
@@ -107,6 +109,32 @@ class Index extends AnnotationController
         return $this->writeJson(200, $resp, 'success');
     }
 
+    /**
+     * 当控制器逻辑抛出异常时将调用该方法进行处理异常(框架默认已经处理了异常)可覆盖该方法,进行自定义的异常处理
+     *
+     * @param string|null $action
+     * @return bool|null
+     */
+    public function onRequest(?string $action): ?bool
+    {
+        $actionWhiteList = ['login'];
+        if (in_array($action, $actionWhiteList, false)) {
+            return true;
+        }
+        $token = current($this->request()->getHeader('token'));
+        $user_id = App::getInstance()->decodeJwtToken($token);
+        if (!$user_id) {
+            $this->writeJson(401, null, '请先登录');
+            return false;
+        }
+        return parent::onRequest($action);
+    }
+
+    /**
+     * 当请求方法未找到时,自动调用该方法,可自行覆盖该方法实现自己的逻辑
+     *
+     * @param string|null $action
+     */
     protected function actionNotFound(?string $action)
     {
         $this->writeJson(404, [], 'NotFound');

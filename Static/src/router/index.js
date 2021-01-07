@@ -2,8 +2,10 @@ import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import storage from 'store'
 import {createRouter, createWebHashHistory} from 'vue-router'
+import {getToken} from '../libs/auth'
 import store from '../store'
 import Layout from '../views/Layout.vue'
+
 const loadView = (view) => {
   return () => import(`../views/${view}.vue`)
 }
@@ -47,7 +49,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   NProgress.start()
-
+  const ACCESS_TOKEN = getToken()
   const user = storage.get('user')
   const darkMode = storage.get('darkMode')
 
@@ -55,7 +57,8 @@ router.beforeEach((to, from, next) => {
   store.commit('setUser', user)
 
   const LOGIN_PAGE_NAME = 'Login'
-  if (user === null || typeof user === 'undefined' || typeof user._id === 'undefined') {
+
+  if (user === null || typeof user === 'undefined' || typeof user._id === 'undefined' || !ACCESS_TOKEN) {
     if (to.name === LOGIN_PAGE_NAME) {
       next()
     } else {

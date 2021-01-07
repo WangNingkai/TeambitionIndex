@@ -4,6 +4,7 @@
 namespace App\HttpController;
 
 
+use App\Service\DB;
 use EasySwoole\Http\AbstractInterface\AbstractRouter;
 use EasySwoole\Http\Request;
 use EasySwoole\Http\Response;
@@ -18,9 +19,16 @@ class Router extends AbstractRouter
         $routeCollector->post('/api/nodes', '/Index/fetchList');
         $routeCollector->post('/api/node', '/Index/fetchItem');
 
+        $routeCollector->get('/api/share', '/Share/index');
+        $routeCollector->delete('/api/share', '/Share/delete');
+        $routeCollector->post('/api/share', '/Share/create');
+
         $routeCollector->get('/', function (Request $request, Response $response) {
-            $file = EASYSWOOLE_ROOT . '/Static/dist/index.html';
-            $response->write(file_get_contents($file));
+            $db = DB::getInstance()->getConnection();
+
+            $response->write(json_encode($db->error()));
+            /*$file = EASYSWOOLE_ROOT . '/Static/dist/index.html';
+            $response->write(file_get_contents($file));*/
         });
     }
 }

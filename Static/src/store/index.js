@@ -1,6 +1,7 @@
 import storage from 'store'
 import {createStore} from 'vuex'
 import {login as handleLogin} from '../api/user'
+import {setToken} from '../libs/auth'
 const store = createStore({
   state() {
     return {
@@ -34,7 +35,8 @@ const store = createStore({
           .then((res) => {
             const code = res.code
             if (code === 200 || res.result._id !== null) {
-              context.commit('setUser', res.result)
+              context.commit('setUser', res.result.user)
+              setToken(res.result.token)
             }
 
             resolve(res)

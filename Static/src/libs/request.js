@@ -1,6 +1,7 @@
 import axios from 'axios'
 import mdui from 'mdui'
 import store from '../store'
+import {getToken, removeToken} from './auth'
 
 const config = {
   baseURL: process.env.NODE_ENV === 'development' ? 'http://192.168.199.101:9501' : '/',
@@ -10,6 +11,10 @@ const _axios = axios.create(config)
 
 _axios.interceptors.request.use(
   function (config) {
+    const token = getToken()
+    if (token) {
+      config.headers.common['Token'] = token
+    }
     return config
   },
   function (error) {
@@ -43,6 +48,7 @@ _axios.interceptors.response.use(
         case 401:
           error.message = '登录失效'
           // 退出登录
+          removeToken()
           store.commit('clearUser')
           break
         case 403:
