@@ -25,6 +25,9 @@ class Share extends Base
         $offset = $request->get('offset', 0);
 
         $recordId = HashIds::getInstance()->decode($hash);
+        if (null === $recordId) {
+            return $this->writeJson(404, [], 'notFound');
+        }
         $db = DB::getInstance()->getConnection();
         $rows = $db->select('records', '*', ['id' => $recordId]);
         $item = collect(current($rows));
