@@ -3,11 +3,9 @@ import mdui from 'mdui'
 import store from '../store'
 
 const config = {
-  // baseURL: 'http://192.168.199.101:9501',
-  baseURL: '/',
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://192.168.199.101:9501' : '/',
   // withCredentials: true, // Check cross-site Access-Control
 }
-
 const _axios = axios.create(config)
 
 _axios.interceptors.request.use(

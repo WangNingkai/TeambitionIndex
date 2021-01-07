@@ -2,10 +2,10 @@
   <div class="mdui-m-t-5">
     <div class="mdui-row">
       <div class="mdui-col-md-6 mdui-col-offset-md-3 mdui-p-a-3">
-        <div class="mdui-typo">
+        <div class="mdui-typo mdui-m-y-2">
           <div class="mdui-typo-title-opacity mdui-text-center">
-            <i class="mdui-icon material-icons">info</i>
-            Teambition 解析
+            <i class="mdui-icon material-icons">lightbulb_outline</i>
+            Teambition 解析索引
           </div>
         </div>
         <form>
@@ -22,6 +22,7 @@
               autocomplete
             />
             <div class="mdui-textfield-error">手机号不能为空</div>
+            <div class="mdui-textfield-helper">填写teambition账号</div>
           </div>
           <div class="mdui-textfield">
             <i class="mdui-icon material-icons">https</i>
