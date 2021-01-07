@@ -26,11 +26,11 @@ class HashIds
     private $hashids;
 
     /**
-     * @param string $secret
      * @return HashIds
      */
-    public function initialize($secret = 'teamindex'): HashIds
+    public function initialize(): HashIds
     {
+        $secret = App::getInstance()->getSecret();
         $this->hashids = new Hash($secret, self::$length);
         return $this;
     }

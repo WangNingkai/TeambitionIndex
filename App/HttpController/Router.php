@@ -19,9 +19,9 @@ class Router extends AbstractRouter
         $routeCollector->post('/api/nodes', '/Index/fetchList');
         $routeCollector->post('/api/node', '/Index/fetchItem');
 
-        $routeCollector->get('/api/share', '/Share/index');
-        $routeCollector->delete('/api/share', '/Share/delete');
         $routeCollector->post('/api/share', '/Share/create');
+        $routeCollector->get('/api/share', '/Share/index');
+        $routeCollector->delete('/api/share/{id:\d+}', '/Share/delete');
 
         $routeCollector->get('/', function (Request $request, Response $response) {
             $db = DB::getInstance()->getConnection();

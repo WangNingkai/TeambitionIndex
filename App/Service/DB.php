@@ -51,8 +51,7 @@ class DB
         // 创建分享短链
         $this->db->create('records', [
             'id' => [
-                'INTEGER(10)',
-                'PRIMARY KEY',
+                'INTEGER PRIMARY KEY NOT NULL',
             ],
             'user_id' => [
                 'VARCHAR(128)',
@@ -70,7 +69,7 @@ class DB
                 "DEFAULT ''"
             ],
             'created_at' => [
-                'INTEGER(10)',
+                'INTEGER',
                 'NOT NULL',
             ],
         ]);

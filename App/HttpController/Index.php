@@ -8,10 +8,11 @@ use App\Service\App;
 use App\Service\Teambition;
 use App\Service\TeambitionAuth;
 use EasySwoole\FastCache\Cache;
-use EasySwoole\Http\AbstractInterface\Controller;
 
-class Index extends Controller
+class Index extends Base
 {
+    public $actionWhiteList = ['login'];
+
     /**
      * 登录缓存
      * @throws \Exception
@@ -37,7 +38,7 @@ class Index extends Controller
             return $this->writeJson($e->getCode(), [], $e->getMessage());
         }
         $config = array_merge($login->toArray(), $pan_params);
-        Cache::getInstance()->set($user['_id'], $config, 3600 * 72);
+        Cache::getInstance()->set($user['_id'], $config, 86400 * 7);
 
         $token = App::getInstance()->getJwtToken($user);
 
@@ -51,14 +52,12 @@ class Index extends Controller
     public function fetchList()
     {
         $request = collect($this->json());
-        $_id = $request->get('_id');
+        $_id = $this->currentUserId;
         $nodeId = $request->get('nodeId');
         $limit = $request->get('limit', 100);
         $offset = $request->get('offset', 0);
-
         $config = Cache::getInstance()->get($_id);
-        $config = collect(current($config));
-
+        $config = collect($config);
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         $nodeId = $nodeId ?: $rootId;
@@ -95,10 +94,10 @@ class Index extends Controller
     public function fetchItem()
     {
         $request = collect($this->json());
-        $_id = $request->get('_id');
+        $_id = $this->currentUserId;
         $nodeId = $request->get('nodeId');
         $config = Cache::getInstance()->get($_id);
-        $config = collect(current($config));
+        $config = collect($config);
         $service = new Teambition($config->toArray());
         $rootId = $config->get('rootId');
         try {
@@ -117,16 +116,6 @@ class Index extends Controller
      */
     public function onRequest(?string $action): ?bool
     {
-        $actionWhiteList = ['login'];
-        if (in_array($action, $actionWhiteList, false)) {
-            return true;
-        }
-        $token = current($this->request()->getHeader('token'));
-        $user_id = App::getInstance()->decodeJwtToken($token);
-        if (!$user_id) {
-            $this->writeJson(401, null, '请先登录');
-            return false;
-        }
         return parent::onRequest($action);
     }
 

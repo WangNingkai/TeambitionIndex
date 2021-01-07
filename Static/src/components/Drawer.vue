@@ -15,15 +15,21 @@
           <a class="mdui-list-item-icon mdui-icon material-icons">account_circle</a>
           <a class="mdui-list-item-content">{{ user.name }}</a>
         </li>
+        <router-link to="/" class="mdui-list-item mdui-ripple" tag="li">
+          <a href="javascript:void(0);" class="mdui-list-item-icon mdui-icon material-icons">home</a>
+          <a href="javascript:void(0);" class="mdui-list-item-content"> 首页 </a>
+        </router-link>
+
+        <li class="mdui-list-item mdui-ripple">
+          <a class="mdui-list-item-icon mdui-icon material-icons">link</a>
+          <a class="mdui-list-item-content">分享</a>
+        </li>
         <li class="mdui-list-item mdui-ripple" @click="handleLogout()">
           <a class="mdui-list-item-icon mdui-icon material-icons">exit_to_app</a>
           <a class="mdui-list-item-content">退出登陆</a>
         </li>
       </template>
-      <router-link to="/" class="mdui-list-item mdui-ripple" tag="li">
-        <a href="javascript:void(0);" class="mdui-list-item-icon mdui-icon material-icons">home</a>
-        <a href="javascript:void(0);" class="mdui-list-item-content"> 首页 </a>
-      </router-link>
+
       <li class="mdui-divider"></li>
       <li class="mdui-list-item mdui-ripple" @click="toggleTheme()">
         <a href="javascript:void(0);" class="mdui-list-item-icon mdui-icon material-icons">brightness_4</a>

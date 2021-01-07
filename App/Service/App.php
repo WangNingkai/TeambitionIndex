@@ -27,6 +27,7 @@ class App
             File::createFile($file, Random::character(32), true);
         }
         DB::getInstance()->initialize();
+        HashIds::getInstance()->initialize();
         return $this;
     }
 

@@ -7,16 +7,14 @@
 namespace App\HttpController;
 
 
-use App\Service\App;
 use App\Service\DB;
-use EasySwoole\Http\AbstractInterface\Controller;
+use App\Service\HashIds;
 
-class Share extends Controller
+class Share extends Base
 {
     public function index()
     {
-        $request = collect($this->json());
-        $_id = $request->get('_id');
+        $_id = $this->currentUserId;
         $db = DB::getInstance()->getConnection();
         $list = $db->select('records', '*', ['user_id' => $_id]);
         $data = collect($list)->toArray();
@@ -26,8 +24,8 @@ class Share extends Controller
     public function create()
     {
         $request = collect($this->json());
-        $_id = $request->get('_id');
-        $node_id = $request->get('node_id');
+        $_id = $this->currentUserId;
+        $node_id = $request->get('nodeId');
         $db = DB::getInstance()->getConnection();
 
         $name = $request->get('name');
@@ -35,7 +33,21 @@ class Share extends Controller
             'name' => $name,
             'user_id' => $_id,
             'node_id' => $node_id,
+            'created_at' => time()
         ]);
+        $record_id = $db->id();
+        $hash = HashIds::getInstance()->encode($record_id);
+        return $this->writeJson(200, $hash, 'success');
+    }
+
+    public function delete()
+    {
+        $record_id = $this->request()->getQueryParam('id');
+        $db = DB::getInstance()->getConnection();
+        $result = $db->delete('records', [
+            'id' => $record_id
+        ]);
+        return $this->writeJson(200, $result->rowCount(), 'success');
     }
 
     /**
@@ -46,12 +58,6 @@ class Share extends Controller
      */
     public function onRequest(?string $action): ?bool
     {
-        $token = $this->request()->getHeader('Token');
-        $user_id = App::getInstance()->decodeJwtToken($token);
-        if (!$user_id) {
-            $this->writeJson(401, null, '请先登录');
-            return true;
-        }
         return parent::onRequest($action);
     }
 
