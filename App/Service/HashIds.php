@@ -50,10 +50,10 @@ class HashIds
      * 解密
      *
      * @param string $hash
-     * @return array|mixed
+     * @return mixed
      * @throws \Exception
      */
-    public function decode(string $hash): ?array
+    public function decode(string $hash)
     {
         $data = $this->hashids->decode($hash);
         if (empty($data) || !is_array($data)) {

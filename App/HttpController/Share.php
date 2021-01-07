@@ -9,9 +9,61 @@ namespace App\HttpController;
 
 use App\Service\DB;
 use App\Service\HashIds;
+use App\Service\Teambition;
+use EasySwoole\FastCache\Cache;
 
 class Share extends Base
 {
+    public $actionWhiteList = ['view'];
+
+    public function view()
+    {
+        $request = collect($this->request()->getRequestParam());
+        $hash = $request->get('hash');
+        $nodeId = $request->get('nodeID');
+        $limit = $request->get('limit', 100);
+        $offset = $request->get('offset', 0);
+
+        $recordId = HashIds::getInstance()->decode($hash);
+        $db = DB::getInstance()->getConnection();
+        $rows = $db->select('records', '*', ['id' => $recordId]);
+        $item = collect(current($rows));
+        $rootId = $item->get('node_id');
+        $userId = $item->get('user_id');
+        $config = Cache::getInstance()->get($userId);
+        $config = collect($config);
+        $service = new Teambition($config->toArray());
+        $nodeId = $nodeId ?: $rootId;
+        try {
+            $item = $service->getItem($nodeId);
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
+        }
+        $isFile = collect($item)->get('kind') === 'file';
+        if ($isFile) {
+            return $this->writeJson(200, $item, 'success');
+        }
+        try {
+            $list = $service->getItemList($nodeId, $limit, $offset);
+        } catch (\Exception $e) {
+            return $this->writeJson($e->getCode(), [], $e->getMessage());
+        }
+
+        $data = collect($list);
+
+        $rootId = $config->get('rootId');
+        $result = [
+            'limit' => $data->get('limit'),
+            'offset' => $data->get('offset'),
+            'totalCount' => $data->get('totalCount'),
+            'list' => $data->get('data'),
+            'item' => $item,
+            'isRoot' => (int)($rootId === $nodeId)
+        ];
+
+        return $this->writeJson(200, $result, 'success');
+    }
+
     public function index()
     {
         $_id = $this->currentUserId;

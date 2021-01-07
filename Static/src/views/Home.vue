@@ -220,7 +220,7 @@ const share = async (nodeId, name) => {
   await createShare({nodeId, name}).then((res) => {
     const result = res.result
     const code = res.code
-    if (code !== 200 || res.result._id === null) {
+    if (code !== 200 || res.result === null) {
       mdui.snackbar({
         message: ':( ' + res.msg,
         timeout: 2000,
@@ -228,7 +228,8 @@ const share = async (nodeId, name) => {
       })
       return
     }
-    data.shareLink = result
+
+    data.shareLink = window.location.origin + '/s/' + result
     let inst = new mdui.Dialog('#shareDialog')
     inst.open()
   })
