@@ -25,8 +25,8 @@ class Router extends AbstractRouter
         $routeCollector->delete('/api/share/{id:\d+}', '/Share/delete');
 
         $routeCollector->get('/', function (Request $request, Response $response) {
-            $db = DB::getInstance()->getConnection();
-            $response->write(json_encode($db->info()));
+            $file = EASYSWOOLE_ROOT . '/Public/index.html';
+            $response->write(file_get_contents($file));
         });
     }
 }

@@ -10,7 +10,9 @@ return [
         'SETTING' => [
             'worker_num' => 8,
             'reload_async' => true,
-            'max_wait_time' => 3
+            'max_wait_time' => 3,
+            'document_root' => EASYSWOOLE_ROOT . '/Public/',
+            'enable_static_handler' => true,
         ],
         'TASK' => [
             'workerNum' => 4,
@@ -19,5 +21,5 @@ return [
         ],
     ],
     'TEMP_DIR' => '/tmp',
-    'LOG_DIR' => '/var/log',
+    'LOG_DIR' => '/tmp/log',
 ];

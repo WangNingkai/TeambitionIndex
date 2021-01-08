@@ -91,6 +91,7 @@ class EasySwooleEvent implements Event
             File::createFile($path, serialize($data));
         });
         Cache::getInstance()->setTempDir(EASYSWOOLE_TEMP_DIR)->attachToServer(ServerManager::getInstance()->getSwooleServer());
+
         if (Core::getInstance()->runMode() === 'dev') {
             // 配置同上别忘了添加要检视的目录
             $hotReloadOptions = new HotReloadOptions;
