@@ -19,5 +19,5 @@ return [
         ],
     ],
     'TEMP_DIR' => '/tmp',
-    'LOG_DIR' => '/log',
+    'LOG_DIR' => '/var/log',
 ];
