@@ -28,5 +28,10 @@ class Router extends AbstractRouter
             $file = EASYSWOOLE_ROOT . '/Public/index.html';
             $response->write(file_get_contents($file));
         });
+
+        $this->setRouterNotFoundCallBack(function (Request $request,Response $response){
+            $file = EASYSWOOLE_ROOT . '/Public/index.html';
+            $response->write(file_get_contents($file));
+        });
     }
 }
