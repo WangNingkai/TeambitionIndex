@@ -7,6 +7,7 @@
 namespace App\HttpController;
 
 
+use App\Service\App;
 use App\Service\DB;
 use App\Service\HashIds;
 use App\Service\Teambition;
@@ -20,10 +21,6 @@ class Share extends Base
     {
         $request = collect($this->request()->getRequestParam());
         $hash = $request->get('hash');
-        $nodeId = $request->get('nodeID');
-        $limit = $request->get('limit', 100);
-        $offset = $request->get('offset', 0);
-
         $recordId = HashIds::getInstance()->decode($hash);
         if (null === $recordId) {
             return $this->writeJson(404, [], 'notFound');
@@ -31,49 +28,52 @@ class Share extends Base
         $db = DB::getInstance()->getConnection();
         $rows = $db->select('records', '*', ['id' => $recordId]);
         $item = collect(current($rows));
-        $rootId = $item->get('node_id');
+        $nodeId = $item->get('node_id');
         $userId = $item->get('user_id');
         $config = Cache::getInstance()->get($userId);
         $config = collect($config);
         $service = new Teambition($config->toArray());
-        $nodeId = $nodeId ?: $rootId;
         try {
             $item = $service->getItem($nodeId);
         } catch (\Exception $e) {
             return $this->writeJson($e->getCode(), [], $e->getMessage());
         }
         $isFile = collect($item)->get('kind') === 'file';
-        if ($isFile) {
-            return $this->writeJson(200, $item, 'success');
+        if (!$isFile) {
+            return $this->writeJson(404, [], 'notFound');
         }
-        try {
-            $list = $service->getItemList($nodeId, $limit, $offset);
-        } catch (\Exception $e) {
-            return $this->writeJson($e->getCode(), [], $e->getMessage());
-        }
-
-        $data = collect($list);
-
-        $rootId = $config->get('rootId');
-        $result = [
-            'limit' => $data->get('limit'),
-            'offset' => $data->get('offset'),
-            'totalCount' => $data->get('totalCount'),
-            'list' => $data->get('data'),
-            'item' => $item,
-            'isRoot' => (int)($rootId === $nodeId)
-        ];
-
-        return $this->writeJson(200, $result, 'success');
+        return $this->writeJson(200, $item, 'success');
     }
 
     public function index()
     {
+        $request = collect($this->request()->getRequestParam());
+        $page = $request->get('page', 1);
+        $perPage = $request->get('perPage', 20);
         $_id = $this->currentUserId;
         $db = DB::getInstance()->getConnection();
-        $list = $db->select('records', '*', ['user_id' => $_id]);
-        $data = collect($list)->toArray();
-        return $this->writeJson(200, $data, 'success');
+        $offset = max(0, ($page - 1) * $perPage);
+        $limit = $perPage;
+        $list = $db->select('records', '*', ['user_id' => $_id, 'LIMIT' => [$offset, $limit]]);
+        $list = collect($list)->map(function($item) {
+            $item['hash'] = HashIds::getInstance()->encode($item['id']);
+            return $item;
+        })->all();
+        $totalCount = $db->count('records', '*', ['user_id' => $_id,]);
+        if ($limit < 1) {
+            $totalPage = $totalCount > 0 ? 1 : 0;
+        } else {
+            $totalCount = $totalCount < 0 ? 0 : (int)$totalCount;
+            $totalPage = (int)(($totalCount + $limit - 1) / $limit);
+        }
+        $result = [
+            'currentPage' => $page,
+            'perPage' => $perPage,
+            'totalCount' => $totalCount,
+            'totalPage' => $totalPage,
+            'list' => $list
+        ];
+        return $this->writeJson(200, $result, 'success');
     }
 
     public function create()

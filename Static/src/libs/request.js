@@ -4,7 +4,7 @@ import store from '../store'
 import {getToken, removeToken} from './auth'
 
 const config = {
-  baseURL: process.env.NODE_ENV === 'development' ? 'http://192.168.199.101:9501' : '/',
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:9501' : '/',
   // withCredentials: true, // Check cross-site Access-Control
 }
 const _axios = axios.create(config)

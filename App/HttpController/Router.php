@@ -19,17 +19,14 @@ class Router extends AbstractRouter
         $routeCollector->post('/api/nodes', '/Index/fetchList');
         $routeCollector->post('/api/node', '/Index/fetchItem');
 
-        $routeCollector->post('/api/share', '/Share/create');
-        $routeCollector->get('/api/share', '/Share/index');
-        $routeCollector->delete('/api/share/{id:\d+}', '/Share/delete');
         $routeCollector->get('/api/share/{hash}', '/Share/view');
+        $routeCollector->get('/api/share', '/Share/index');
+        $routeCollector->post('/api/share', '/Share/create');
+        $routeCollector->delete('/api/share/{id:\d+}', '/Share/delete');
 
         $routeCollector->get('/', function (Request $request, Response $response) {
             $db = DB::getInstance()->getConnection();
-
-            $response->write(json_encode($db->error()));
-            /*$file = EASYSWOOLE_ROOT . '/Static/dist/index.html';
-            $response->write(file_get_contents($file));*/
+            $response->write(json_encode($db->info()));
         });
     }
 }

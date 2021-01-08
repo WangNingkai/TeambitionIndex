@@ -51,9 +51,9 @@
               <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">
                 {{ node.kind === 'folder' ? '-' : formatSize(node.size) }}
               </div>
-              <div class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">
+              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">
                 <a
-                  class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
+                  class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down share"
                   aria-label="Share"
                   mdui-tooltip="{content: '分享'}"
                   @click.stop="share(node.nodeId, node.name)"
@@ -61,7 +61,6 @@
                   <i class="mdui-icon material-icons">link</i>
                 </a>
                 <a
-                  v-if="node.kind === 'file'"
                   class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
                   aria-label="Download"
                   mdui-tooltip="{content: '下载'}"
@@ -71,9 +70,15 @@
                   <i class="mdui-icon material-icons">file_download</i>
                 </a>
               </div>
+              <div v-else class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">-</div>
             </div>
           </li>
         </template>
+        <li v-if="data.totalCount > data.list.length" @click="loadMore()" class="mdui-list-item mdui-ripple">
+          <div class="mdui-col-sm-12 mdui-typo-body-1-opacity mdui-text-center">
+            加载更多 <i class="mdui-icon material-icons">expand_more</i>
+          </div>
+        </li>
         <li class="mdui-list-item mdui-ripple">
           <div class="mdui-col-sm-12 mdui-typo-body-1-opacity">
             {{ data.totalCount }}
@@ -107,7 +112,6 @@ import {fetchList} from '../api/teambition'
 import {createShare} from '../api/share'
 import Loading from '../components/Loading.vue'
 import {isEmpty, defaultValue, formatSize} from '../libs/utils'
-import {useStore} from 'vuex'
 import Clipboard from 'clipboard'
 
 Date.prototype.Format = function (fmt) {
@@ -127,7 +131,6 @@ Date.prototype.Format = function (fmt) {
   return fmt
 }
 
-const store = useStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -145,12 +148,9 @@ const data = reactive({
 
 const nodeId = computed(() => defaultValue(route.query.nodeId, ''))
 
-const user = computed(() => store.state.user)
-
 const fetchNodes = async () => {
   data.loading = true
   await fetchList({
-    _id: user._id,
     nodeId: nodeId.value,
     offset: data.offset,
     limit: data.limit,
@@ -168,15 +168,12 @@ const fetchNodes = async () => {
   })
 }
 
-const fetchMore = async () => {
-  data.loading = true
+const loadMore = async () => {
   await fetchList({
-    _id: user._id,
     nodeId: nodeId.value,
     offset: data.offset,
     limit: data.limit,
   }).then((res) => {
-    data.loading = false
     const result = res.result
     data.list = data.list.concat(result.list)
   })

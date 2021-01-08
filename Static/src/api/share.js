@@ -8,6 +8,10 @@ export const createShare = (params) => {
   return request.post('/api/share', params)
 }
 
-export const delteShare = (id, params) => {
+export const deleteShare = (id, params) => {
   return request.delete('/api/share/' + id, params)
+}
+
+export const shareView = (hash, params) => {
+  return request.get('/api/share/' + hash, params)
 }

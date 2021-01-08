@@ -1,7 +1,7 @@
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import storage from 'store'
-import {createRouter, createWebHashHistory} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import {getToken} from '../libs/auth'
 import store from '../store'
 import Layout from '../views/Layout.vue'
@@ -11,7 +11,7 @@ const loadView = (view) => {
 }
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       name: 'Main',
@@ -22,25 +22,26 @@ const router = createRouter({
           name: 'Home',
           path: '/',
           component: loadView('Home'),
-          meta: {
-            title: 'Home',
-          },
         },
         {
           name: 'Login',
           path: '/login',
           component: loadView('Login'),
-          meta: {
-            title: 'Login',
-          },
         },
         {
           name: 'Preview',
           path: '/preview',
           component: loadView('Preview'),
-          meta: {
-            title: 'Preview',
-          },
+        },
+        {
+          name: 'Share',
+          path: '/share',
+          component: loadView('Share'),
+        },
+        {
+          name: 'ShareDetail',
+          path: '/s/:hash',
+          component: loadView('ShareDetail'),
         },
       ],
     },

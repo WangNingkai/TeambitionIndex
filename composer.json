@@ -40,7 +40,7 @@
             "App/Helpers/Functions.php"
         ]
     },
-  "bin": [
-    "easyswoole"
-  ]
+    "bin": [
+        "easyswoole"
+    ]
 }
