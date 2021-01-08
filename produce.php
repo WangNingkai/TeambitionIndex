@@ -19,5 +19,5 @@ return [
         ],
     ],
     'TEMP_DIR' => '/tmp',
-    'LOG_DIR' => EASYSWOOLE_ROOT . '/Storage/Log',
+    'LOG_DIR' => '/log',
 ];
