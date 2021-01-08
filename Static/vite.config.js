@@ -5,6 +5,9 @@ import vue from '@vitejs/plugin-vue'
 export default {
   plugins: [vue()],
   optimizeDeps: {
-    include:['clipboard/src/clipboard.js']
+    include: ['clipboard/src/clipboard.js'],
+  },
+  build: {
+    outDir: '../Public',
   },
 }

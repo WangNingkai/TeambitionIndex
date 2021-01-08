@@ -4,7 +4,6 @@
 namespace App\HttpController;
 
 
-use App\Service\DB;
 use EasySwoole\Http\AbstractInterface\AbstractRouter;
 use EasySwoole\Http\Request;
 use EasySwoole\Http\Response;
