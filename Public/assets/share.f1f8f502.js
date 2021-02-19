@@ -1,1 +1,0 @@
-import{_ as e}from"./index.d7e0ee1e.js";const a=a=>e.get("/api/share",a),s=a=>e.post("/api/share",a),p=(a,s)=>e.delete("/api/share/"+a,s),r=(a,s)=>e.get("/api/share/"+a,s);export{r as a,s as c,p as d,a as s};

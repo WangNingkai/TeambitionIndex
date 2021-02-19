@@ -3,10 +3,10 @@
     <ul class="mdui-list">
       <li class="mdui-list-item mdui-ripple">
         <div class="mdui-row mdui-col-xs-12">
-          <div class="mdui-col-xs-10 mdui-col-sm-6">文件</div>
+          <div class="mdui-col-xs-8 mdui-col-sm-6">文件</div>
           <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">修改时间</div>
           <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">大小</div>
-          <div class="mdui-col-xs-2 mdui-col-sm-2  mdui-text-right">操作</div>
+          <div class="mdui-col-xs-4 mdui-col-sm-2  mdui-text-right">操作</div>
         </div>
       </li>
       <Loading v-if="data.loading" color="mdui-color-blue-200"></Loading>
@@ -30,7 +30,7 @@
             @click="go(node.nodeId, node.kind)"
           >
             <div class="mdui-row mdui-col-xs-12">
-              <div class="mdui-col-xs-10 mdui-col-sm-6 mdui-text-truncate">
+              <div class="mdui-col-xs-8 mdui-col-sm-6 mdui-text-truncate">
                 <a
                   v-if="node.kind === 'folder'"
                   data-name="{{ node.name }}"
@@ -51,7 +51,7 @@
               <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">
                 {{ node.kind === 'folder' ? '-' : formatSize(node.size) }}
               </div>
-              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-col-xs-2 mdui-hidden-sm-down mdui-text-right">
+              <div v-if="node.kind === 'file'" class="mdui-col-xs-4 mdui-col-sm-2 mdui-text-right">
                 <a
                   class="mdui-btn mdui-ripple mdui-btn-icon share"
                   aria-label="Share"
@@ -70,7 +70,7 @@
                   <i class="mdui-icon material-icons">file_download</i>
                 </a>
               </div>
-              <div v-else class="mdui-col-xs-2 mdui-col-sm-2 mdui-text-right">-</div>
+              <div v-else class="mdui-col-xs-4 mdui-col-sm-2 mdui-text-right">-</div>
             </div>
           </li>
         </template>
