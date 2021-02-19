@@ -51,7 +51,7 @@
               <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">
                 {{ node.kind === 'folder' ? '-' : formatSize(node.size) }}
               </div>
-              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-col-xs-2 mdui-hidden-sm-down mdui-text-right">
+              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-col-xs-2 mdui-text-right">
                 <a
                   class="mdui-btn mdui-ripple mdui-btn-icon share"
                   aria-label="Share"

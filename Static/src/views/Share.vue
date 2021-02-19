@@ -25,9 +25,9 @@
               <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">
                 {{ new Date(node.created_at * 1000).Format('yyyy-MM-dd hh:mm:ss') }}
               </div>
-              <div class="mdui-col-xs-4 mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">
+              <div class="mdui-col-xs-4 mdui-col-sm-3  mdui-text-right">
                 <a
-                  class="clipboard mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
+                  class="clipboard mdui-btn mdui-ripple mdui-btn-icon copy"
                   aria-label="Delete"
                   mdui-tooltip="{content: '复制链接'}"
                   :data-clipboard-text="`${host}/s/${node.hash}`"
@@ -36,7 +36,7 @@
                   <i class="mdui-icon material-icons">content_copy</i>
                 </a>
                 <a
-                  class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
+                  class="mdui-btn mdui-ripple mdui-btn-icon delete"
                   aria-label="Delete"
                   mdui-tooltip="{content: '删除'}"
                   @click="deleteItem(node.id)"
