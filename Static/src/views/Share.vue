@@ -3,20 +3,20 @@
     <ul class="mdui-list">
       <li class="mdui-list-item mdui-ripple">
         <div class="mdui-row mdui-col-xs-12">
-          <div class="mdui-col-xs-12 mdui-col-sm-6">文件</div>
+          <div class="mdui-col-xs-8 mdui-col-sm-6">文件</div>
           <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">分享时间</div>
-          <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">操作</div>
+          <div class="mdui-col-xs-4 mdui-col-sm-3 mdui-text-right">操作</div>
         </div>
       </li>
       <Loading v-if="data.loading" color="mdui-color-blue-200"></Loading>
       <template v-else>
         <li v-if="isEmpty(data.list)" class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12"><i class="mdui-icon material-icons">info</i> 没有更多数据呦</div>
+          <div class="mdui-col-xs-12"><i class="mdui-icon material-icons">info</i> 没有更多数据呦</div>
         </li>
         <template v-else>
           <li v-for="node in data.list" :key="node.id" class="mdui-list-item mdui-ripple">
-            <div class="mdui-row mdui-col-sm-12 mdui-valign">
-              <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-text-truncate">
+            <div class="mdui-row mdui-col-xs-12 mdui-valign">
+              <div class="mdui-col-xs-8 mdui-col-sm-6 mdui-text-truncate">
                 <a data-name="{{ node.name }}" href="javascript:void(0);" aria-label="File">
                   <i class="mdui-icon material-icons"> insert_drive_file </i>
                   <span>&nbsp;{{ node.name }}</span>
@@ -25,7 +25,7 @@
               <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">
                 {{ new Date(node.created_at * 1000).Format('yyyy-MM-dd hh:mm:ss') }}
               </div>
-              <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">
+              <div class="mdui-col-xs-4 mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">
                 <a
                   class="clipboard mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
                   aria-label="Delete"
@@ -48,12 +48,12 @@
           </li>
         </template>
         <li v-if="data.currentPage < data.totalPage" @click="loadMore()" class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12 mdui-typo-body-1-opacity mdui-text-center">
+          <div class="mdui-col-xs-12 mdui-typo-body-1-opacity mdui-text-center">
             加载更多 <i class="mdui-icon material-icons">expand_more</i>
           </div>
         </li>
         <li class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12 mdui-typo-body-1-opacity">
+          <div class="mdui-col-xs-12 mdui-typo-body-1-opacity">
             {{ data.totalCount }}
             个项目
           </div>

@@ -3,16 +3,16 @@
     <ul class="mdui-list">
       <li class="mdui-list-item mdui-ripple">
         <div class="mdui-row mdui-col-xs-12">
-          <div class="mdui-col-xs-12 mdui-col-sm-6">文件</div>
+          <div class="mdui-col-xs-10 mdui-col-sm-6">文件</div>
           <div class="mdui-col-sm-3 mdui-hidden-sm-down mdui-text-right">修改时间</div>
           <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">大小</div>
-          <div class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">操作</div>
+          <div class="mdui-col-xs-2 mdui-col-sm-2  mdui-text-right">操作</div>
         </div>
       </li>
       <Loading v-if="data.loading" color="mdui-color-blue-200"></Loading>
       <template v-else>
         <li v-if="!data.isRoot" class="mdui-list-item mdui-ripple" @click="go(data.parentId)">
-          <div class="mdui-col-sm-12">
+          <div class="mdui-col-xs-12">
             <a href="javascript:void(0);">
               <i class="mdui-icon material-icons">arrow_back</i>
               返回上级
@@ -20,7 +20,7 @@
           </div>
         </li>
         <li v-if="isEmpty(data.list)" class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12"><i class="mdui-icon material-icons">info</i> 没有更多数据呦</div>
+          <div class="mdui-col-xs-12"><i class="mdui-icon material-icons">info</i> 没有更多数据呦</div>
         </li>
         <template v-else>
           <li
@@ -29,8 +29,8 @@
             class="mdui-list-item mdui-ripple"
             @click="go(node.nodeId, node.kind)"
           >
-            <div class="mdui-row mdui-col-sm-12">
-              <div class="mdui-col-xs-12 mdui-col-sm-6 mdui-text-truncate">
+            <div class="mdui-row mdui-col-xs-12">
+              <div class="mdui-col-xs-10 mdui-col-sm-6 mdui-text-truncate">
                 <a
                   v-if="node.kind === 'folder'"
                   data-name="{{ node.name }}"
@@ -51,9 +51,9 @@
               <div class="mdui-col-sm-1 mdui-hidden-sm-down mdui-text-right">
                 {{ node.kind === 'folder' ? '-' : formatSize(node.size) }}
               </div>
-              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">
+              <div v-if="node.kind === 'file'" class="mdui-col-sm-2 mdui-col-xs-2 mdui-hidden-sm-down mdui-text-right">
                 <a
-                  class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down share"
+                  class="mdui-btn mdui-ripple mdui-btn-icon share"
                   aria-label="Share"
                   mdui-tooltip="{content: '分享'}"
                   @click.stop="share(node.nodeId, node.name)"
@@ -61,7 +61,7 @@
                   <i class="mdui-icon material-icons">link</i>
                 </a>
                 <a
-                  class="mdui-btn mdui-ripple mdui-btn-icon mdui-hidden-sm-down download"
+                  class="mdui-btn mdui-ripple mdui-btn-icon download"
                   aria-label="Download"
                   mdui-tooltip="{content: '下载'}"
                   @click.stop="download(node.downloadUrl)"
@@ -70,17 +70,17 @@
                   <i class="mdui-icon material-icons">file_download</i>
                 </a>
               </div>
-              <div v-else class="mdui-col-sm-2 mdui-hidden-sm-down mdui-text-right">-</div>
+              <div v-else class="mdui-col-xs-2 mdui-col-sm-2 mdui-text-right">-</div>
             </div>
           </li>
         </template>
         <li v-if="data.totalCount > data.list.length" @click="loadMore()" class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12 mdui-typo-body-1-opacity mdui-text-center">
+          <div class="mdui-col-xs-12 mdui-typo-body-1-opacity mdui-text-center">
             加载更多 <i class="mdui-icon material-icons">expand_more</i>
           </div>
         </li>
         <li class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-sm-12 mdui-typo-body-1-opacity">
+          <div class="mdui-col-xs-12 mdui-typo-body-1-opacity">
             {{ data.totalCount }}
             个项目
           </div>
