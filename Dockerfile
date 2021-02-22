@@ -1,35 +1,66 @@
-FROM php:7.4.14-cli-alpine3.12
+# build frontend
+FROM node:lts-buster AS fe-builder
 
-ENV SWOOLE_VERSION 4.6.0
+COPY ./assets /assets
 
-RUN \
-    curl -sfL http://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
-    chmod +x /usr/bin/composer                                                                     && \
-    composer self-update --clean-backups 2.0.8                                    && \
-    composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/  && \
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
-    apk update && \
-    apk add --no-cache libstdc++ && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS curl-dev openssl-dev pcre-dev pcre2-dev zlib-dev && \
-    apk add --no-cache gmp gmp-dev git && \
-    docker-php-ext-install gmp && \
-    docker-php-ext-install bcmath && \
-    docker-php-ext-install sockets && \
-    docker-php-source extract && \
-    mkdir /usr/src/php/ext/swoole && \
-    curl -sfL https://github.com/swoole/swoole-src/archive/v${SWOOLE_VERSION}.tar.gz -o swoole.tar.gz && \
-    tar xfz swoole.tar.gz --strip-components=1 -C /usr/src/php/ext/swoole && \
-    docker-php-ext-configure swoole \
-        --enable-http2   \
-        --enable-mysqlnd \
-        --enable-openssl \
-        --enable-sockets --enable-swoole-curl --enable-swoole-json && \
-    docker-php-ext-install -j$(nproc) swoole && \
-    rm -f swoole.tar.gz $HOME/.composer/*-old.phar && \
-    docker-php-source delete && \
-    apk del .build-deps
+WORKDIR /assets
 
+# yarn repo connection is unstable, adjust the network timeout to 10 min.
+RUN set -ex \
+    && yarn install --network-timeout 600000 \
+    && yarn run build
 
-WORKDIR /var/www
+# build backend
+FROM golang:1.16-alpine3.12 AS be-builder
 
-EXPOSE 9501
+ENV GO111MODULE on
+ENV GOPROXY=https://goproxy.io,direct
+
+COPY . /go/src/teambition
+COPY --from=fe-builder /assets/dist/ /go/src/teambition/assets/dist/
+
+WORKDIR /go/src/teambition
+
+RUN set -ex \
+    && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk upgrade \
+    && apk add gcc libc-dev git \
+    && export COMMIT_SHA=$(git rev-parse --short HEAD) \
+    && export VERSION=$(git describe --tags) \
+    && (cd && go get github.com/rakyll/statik) \
+    && statik -f -src=assets/dist/ -include=*.html,*.js,*.json,*.css,*.png,*.svg,*.ico,*.woff2,*.woff \
+    && go build -o /go/bin/teambition -ldflags "-w -s"
+
+# build final image
+FROM alpine:3.12 AS dist
+
+LABEL maintainer="mritd <mritd@linux.com>"
+
+# we use the Asia/Shanghai timezone by default, you can be modified
+# by `docker build --build-arg=TZ=Other_Timezone ...`
+ARG TZ="Asia/Shanghai"
+
+ENV TZ ${TZ}
+
+COPY --from=be-builder /go/bin/teambition /teambition/teambition
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+    && apk upgrade \
+    && apk add bash tzdata \
+    && ln -s /teambition/teambition /usr/bin/teambition \
+    && ln -sf /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && rm -rf /var/cache/apk/*
+
+# teambition use tcp 5212 port by default
+EXPOSE 3000/tcp
+
+# teambition stores all files(including executable file) in the `/teambition`
+# directory by default; users should mount the configfile to the `/etc/teambition`
+# directory by themselves for persistence considerations, and the data storage
+# directory recommends using `/data` directory.
+VOLUME /etc/teambition
+
+VOLUME /data
+
+ENTRYPOINT ["teambition"]

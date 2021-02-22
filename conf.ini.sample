@@ -1,0 +1,35 @@
+; 系统相关
+[System]
+; 是否开启 Debug
+Debug = false
+; 监听地址
+Host = 127.0.0.1
+Port = 3000
+; 通信密钥（勿改）
+AppSecret = xxxx
+JWTSecret = xxxx
+
+; 数据库相关，如果你只想使用内置的 SQLite数据库，这一部分直接删去即可
+[Database]
+; 数据库类型，目前支持 sqlite | mysql
+Type = mysql
+; MySQL 端口
+Port = 3306
+; 用户名
+User = root
+; 密码
+Password = root
+; 数据库地址
+Host = 127.0.0.1
+; 数据库名称
+Name = v3
+; 数据表前缀
+TablePrefix = ol_
+; SQLite 数据库文件路径
+DBFile = teambition-index.db
+
+; Redis 相关
+[Redis]
+Server = 127.0.0.1:6379
+Password =
+DB = 0
