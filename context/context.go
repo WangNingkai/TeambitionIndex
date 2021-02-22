@@ -22,8 +22,6 @@ type Context struct {
 	Version       string
 	AppName       string
 	ServerAddress string
-	ServerHost    string
-	ServerPort    string
 	Debug         bool
 	AppSecret     string
 	DB            *gorm.DB
@@ -49,10 +47,8 @@ func InitContext() {
 	conf.Init(instance.ConfPath)
 	instance.Version = version
 	instance.AppName = "teambition-index"
-	instance.ServerHost = conf.SystemConfig.Host
-	instance.ServerPort = conf.SystemConfig.Port
+	instance.ServerAddress = conf.SystemConfig.ServerAddress
 	instance.Debug = conf.SystemConfig.Debug
-	instance.ServerAddress = fmt.Sprintf("%s:%s", instance.ServerHost, instance.ServerPort)
 	instance.AppSecret = conf.SystemConfig.AppSecret
 	instance.DB = instance.initDatabase()
 }

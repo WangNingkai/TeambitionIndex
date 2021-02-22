@@ -52,7 +52,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && echo ${TZ} > /etc/timezone \
     && rm -rf /var/cache/apk/*
 
-# teambition use tcp 5212 port by default
+# teambition use tcp 3000 port by default
 EXPOSE 3000/tcp
 
 # teambition stores all files(including executable file) in the `/teambition`

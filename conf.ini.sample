@@ -3,8 +3,7 @@
 ; 是否开启 Debug
 Debug = false
 ; 监听地址
-Host = 127.0.0.1
-Port = 3000
+ServerAddress = :3000
 ; 通信密钥（勿改）
 AppSecret = xxxx
 JWTSecret = xxxx

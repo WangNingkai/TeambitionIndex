@@ -46,8 +46,10 @@
 import {computed, onMounted} from 'vue'
 import mdui from 'mdui'
 import {useStore} from 'vuex'
+import {useRouter} from 'vue-router'
 
 const store = useStore()
+const router = useRouter()
 const darkMode = computed(() => store.state.darkMode)
 const user = computed(() => store.state.user)
 

@@ -17,10 +17,8 @@ var DatabaseConfig = &database{
 
 // SystemConfig 系统公用配置
 var SystemConfig = &system{
-	Debug:     false,
-	Port:      "3000",
-	Host:      "127.0.0.1",
-	WorkerNum: 10,
+	Debug:         false,
+	ServerAddress: ":3000",
 }
 
 // CORSConfig 跨域配置

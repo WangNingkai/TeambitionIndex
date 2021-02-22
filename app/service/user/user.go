@@ -27,7 +27,6 @@ func (service *UserLoginService) Authenticate(c *gin.Context) serializer.Respons
 	}
 	user := res.User
 	_ = cache.Set(fmt.Sprintf("user_%s", user.ID), res, -1)
-
 	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
 

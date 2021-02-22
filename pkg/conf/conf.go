@@ -21,12 +21,11 @@ type database struct {
 
 // system 系统通用配置
 type system struct {
-	Host      string `validate:"required"`
-	Port      string `validate:"required"`
-	Debug     bool
-	AppSecret string
-	JWTSecret string
-	WorkerNum int
+	ServerAddress string `validate:"required"`
+	Debug         bool
+	AppSecret     string
+	JWTSecret     string
+	WorkerNum     int
 }
 
 // redis 配置
@@ -49,8 +48,7 @@ type cors struct {
 var cfg *ini.File
 
 const defaultConf = `[System]
-Host = 127.0.0.1
-Port = 3000
+ServerAddress = :3000
 AppSecret = {AppSecret}
 JWTSecret = {JWTSecret}
 `

@@ -62,8 +62,8 @@ func ErrorResponse(err error) serializer.Response {
 // CurrentUser 获取当前用户
 func CurrentUser(c *gin.Context) *teambition.UserInfo {
 	if user, _ := c.Get("user"); user != nil {
-		if u, ok := user.(teambition.UserInfo); ok {
-			return &u
+		if u, ok := user.(*teambition.UserInfo); ok {
+			return u
 		}
 	}
 	return nil
