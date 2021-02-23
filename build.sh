@@ -60,7 +60,7 @@ _build() {
         out="release/teambition_${COMMIT_SHA}_${os}_${arch}"
     fi
 
-    go build -a -o "${out}" -ldflags
+    go build -a -o "${out}" -ldflags "-w -s"
 
     if [ "$os" = "windows" ]; then
       mv $out release/teambition.exe
