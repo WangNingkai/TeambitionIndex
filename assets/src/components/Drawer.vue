@@ -30,12 +30,12 @@
       <li class="mdui-divider"></li>
       <li class="mdui-list-item mdui-ripple">
         <a
-          href="https://github.com/WangNingkai/teambition-index"
+          href="https://github.com/WangNingkai/TeambitionIndex"
           target="_blank"
           class="mdui-list-item-icon mdui-icon material-icons"
           >code</a
         >
-        <a href="https://github.com/WangNingkai/teambition-index" target="_blank" class="mdui-list-item-content"
+        <a href="https://github.com/WangNingkai/TeambitionIndex" target="_blank" class="mdui-list-item-content"
           >Github</a
         >
       </li>
