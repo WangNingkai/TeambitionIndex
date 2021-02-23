@@ -44,10 +44,9 @@ buildBinary () {
 
 _build() {
     local osarch=$1
-    IFS=/ read -r -a arr <<<"$osarch"
-    os="${arr[0]}"
-    arch="${arr[1]}"
-    gcc="${arr[2]}"
+    os=`echo "${osarch}"|awk -F '/' '{print $1}'`
+    arch=`echo "${osarch}"|awk -F '/' '{print $2}'`
+    gcc=`echo "${osarch}"|awk -F '/' '{print $3}'`
 
     # Go build to build the binary.
     export GOOS=$os
