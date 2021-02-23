@@ -74,15 +74,9 @@
             </div>
           </li>
         </template>
-        <li v-if="data.totalCount > data.list.length" @click="loadMore()" class="mdui-list-item mdui-ripple">
+        <li v-if="data.NextMarker !== ''" @click="loadMore()" class="mdui-list-item mdui-ripple">
           <div class="mdui-col-xs-12 mdui-typo-body-1-opacity mdui-text-center">
             加载更多 <i class="mdui-icon material-icons">expand_more</i>
-          </div>
-        </li>
-        <li class="mdui-list-item mdui-ripple">
-          <div class="mdui-col-xs-12 mdui-typo-body-1-opacity">
-            {{ data.totalCount }}
-            个项目
           </div>
         </li>
       </template>
@@ -126,7 +120,7 @@ const data = reactive({
   item: {},
   limit: 100,
   offset: 0,
-  totalCount: 0,
+  NextMarker: '',
   isRoot: 1,
   loading: false,
   shareLink: '',
@@ -156,12 +150,12 @@ const fetchNodes = async (refresh = false) => {
     const result = res.data
     data.limit = result.limit
     data.offset = result.offset
-    data.totalCount = result.totalCount
     data.list = result.list
     data.item = result.item
     data.nodeId = result.item.nodeId
     data.parentId = result.item.parentId
     data.isRoot = result.isRoot
+    data.NextMarker = result.NextMarker
   })
 }
 
