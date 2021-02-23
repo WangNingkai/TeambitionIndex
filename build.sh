@@ -39,7 +39,7 @@ buildAssets () {
 
 buildBinary () {
   cd $REPO
-  go build -o teambition -ldflags "-w -s"
+  go build -o teambition -ldflags "-w -s" 
 }
 
 _build() {
@@ -60,7 +60,7 @@ _build() {
         out="release/teambition_${COMMIT_SHA}_${os}_${arch}"
     fi
 
-    go build -a -o "${out}" -ldflags "-w -s"
+    go build -a -o "${out}" -ldflags '-s -w --extldflags "-static -fpic"'
 
     if [ "$os" = "windows" ]; then
       mv $out release/teambition.exe
@@ -76,7 +76,7 @@ _build() {
 release(){
   cd $REPO
   ## List of architectures and OS to test coss compilation.
-  SUPPORTED_OSARCH="linux/amd64/gcc linux/arm/arm-linux-gnueabihf-gcc windows/amd64/x86_64-w64-mingw32-gcc linux/arm64/aarch64-linux-gnu-gcc"
+  SUPPORTED_OSARCH="linux/amd64/gcc linux/arm/arm-linux-musleabihf-gcc windows/amd64/x86_64-w64-mingw32-gcc linux/arm64/aarch64-linux-musl-gcc"
 
   echo "Release builds for OS/Arch/CC: ${SUPPORTED_OSARCH}"
   for each_osarch in ${SUPPORTED_OSARCH}; do
@@ -102,7 +102,7 @@ while getopts "bacr:d" o; do
       BINARY="true"
       ;;
     r)
-      ASSETS="true"
+      # ASSETS="true"
       RELEASE="true"
       ;;
     d)
