@@ -12,6 +12,21 @@
 - 支持多种资源即时预览
 - 直链分享
 
+## 部署
+
+下载适用于您目标机器操作系统、CPU 架构的主程序，直接运行即可。
+
+```bash
+# 解压程序包
+tar -zxvf teambition_VERSION_OS_ARCH.tar.gz
+
+# 赋予执行权限
+chmod +x ./teambition
+
+# 启动 teambition-index
+./teambition
+```
+
 ## 构建
 
 自行构建前需要拥有 Go >= 1.16、yarn 等必要依赖。

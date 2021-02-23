@@ -13,7 +13,7 @@ debugInfo () {
   echo "Build binary:   $BINARY"
   echo "Release:        $RELEASE"
   echo "Version:        $VERSION"
-  echo "Commit:        $COMMIT_SHA"
+  echo "Commit:         $COMMIT_SHA"
 }
 
 buildAssets () {
