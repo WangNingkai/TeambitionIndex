@@ -1,5 +1,5 @@
 # build frontend
-FROM node:lts-buster AS fe-builder
+FROM node:lts-alpine3.12 AS fe-builder
 
 COPY ./assets /assets
 
