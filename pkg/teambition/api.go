@@ -109,8 +109,8 @@ func (client *Client) GetList(NodeID string, Limit int64, Offset int64, useCache
 	}
 	if useCache {
 		if cachedData, ok := cache.Get(fmt.Sprintf("s_list_%s_%s_%d_%d", client.UserID, NodeID, Limit, Offset)); ok {
-			data := cachedData.(*ListResponse)
-			return data, nil
+			data := cachedData.(ListResponse)
+			return &data, nil
 		}
 
 	}
@@ -143,7 +143,7 @@ func (client *Client) GetList(NodeID string, Limit int64, Offset int64, useCache
 	}
 	_ = cache.Set(
 		fmt.Sprintf("s_list_%s_%s_%d_%d", client.UserID, NodeID, Limit, Offset),
-		&data,
+		data,
 		1800,
 	)
 	return &data, nil
@@ -156,8 +156,8 @@ func (client *Client) GetItem(NodeID string, useCache bool) (*ItemResponse, erro
 	}
 	if useCache {
 		if cachedData, ok := cache.Get(fmt.Sprintf("s_item_%s_%s", client.UserID, NodeID)); ok {
-			data := cachedData.(*ItemResponse)
-			return data, nil
+			data := cachedData.(ItemResponse)
+			return &data, nil
 		}
 	}
 	if NodeID == "" {
@@ -188,7 +188,7 @@ func (client *Client) GetItem(NodeID string, useCache bool) (*ItemResponse, erro
 	}
 	_ = cache.Set(
 		fmt.Sprintf("s_item_%s_%s", client.UserID, NodeID),
-		&data,
+		data,
 		1800,
 	)
 	return &data, nil
