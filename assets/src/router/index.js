@@ -25,9 +25,10 @@ router.beforeEach((to, from, next) => {
   }
 
   const LOGIN_PAGE_NAME = 'Login'
+  const allowList = ['Login', 'ShareDetail']
 
   if (user === null || typeof user === 'undefined' || typeof user._id === 'undefined' || !ACCESS_TOKEN) {
-    if (to.name === LOGIN_PAGE_NAME) {
+    if (allowList.includes(to.name)) {
       next()
     } else {
       next({
